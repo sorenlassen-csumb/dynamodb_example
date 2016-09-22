@@ -11,12 +11,18 @@ public class DBConnector {
     private static DynamoDB dynamoDB;
 
     private static DynamoDBProxyServer server=null;
+    private static AmazonDynamoDB client;
 
     public static void initiate(){
-        AmazonDynamoDB client = new AmazonDynamoDBClient(new BasicAWSCredentials("access", "secret"));
+        client = new AmazonDynamoDBClient(new BasicAWSCredentials("access", "secret"));
         // connect to dynamodb local server
         client.setEndpoint("http://localhost:8000");
         dynamoDB = new DynamoDB(client);
+    }
+
+    public static void close(){
+        dynamoDB.shutdown();
+        client.shutdown();
     }
 
     public static DynamoDB getDynamoDB() {
