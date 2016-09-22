@@ -1,5 +1,5 @@
 # Maven build artifacts
-/target/**
+/target/*
 
 # IDE stuff
-/.idea/**
+/.idea/*
