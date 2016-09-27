@@ -3,10 +3,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>dynamodb</groupId>
+    <packaging>war</packaging>
     <artifactId>ddb</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <groupId>edu.csumb.dynamodbexample</groupId>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -28,6 +28,11 @@
             <groupId>com.amazonaws</groupId>
             <artifactId>DynamoDBLocal</artifactId>
             <version>1.10.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <version>1.3</version>
         </dependency>
     </dependencies>
     <build>

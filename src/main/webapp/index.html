@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <title>DynamoDB Test</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    </head>
+    <body>
+        <a href="#" id="exec">Run Command</a><br/>
+        <div id="execute"></div>
+        <script>
+            $("#exec").click(function(){
+                $("#execute").html("");
+                $.get("/rest/executor",[],function(data){
+                    $("#execute").html(data);
+                });
+            });
+        </script>
+    </body>
+</html>
