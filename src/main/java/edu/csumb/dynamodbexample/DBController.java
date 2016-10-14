@@ -29,8 +29,8 @@ public class DBController {
                 client.setRegion(Region.US_West.toAWSRegion());
                 dynamoDB = new DynamoDB(client);
             } else {
-                String access = System.getProperty("Access");
-                String secret = System.getProperty("Secret");
+                String access = System.getenv("Access");
+                String secret = System.getenv("Secret");
                 if (access == null || secret == null || access.equals("") || secret.equals("")) {
                     System.exit(-1);
                 } else {
