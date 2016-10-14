@@ -9,8 +9,8 @@ import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
  * Created by nathanieldavidson on 9/22/16.
  */
 public class UpdateExamples {
-    public static boolean update(String tablename, long id, String newDataToStore){
-        Table table = DBConnector.getDynamoDB().getTable(tablename); // Table Name = test
+    public static boolean update(String tablename, long id, String newDataToStore, DBController controller){
+        Table table = controller.getDynamoDB().getTable(tablename); // Table Name = test
         try{
             UpdateItemSpec updateItemSpec = new UpdateItemSpec()
                 .withPrimaryKey("Id", id)

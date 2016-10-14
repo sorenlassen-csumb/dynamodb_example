@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class CreateExamples {
 
 
-    public static boolean createTable(String tablename){
+    public static boolean createTable(String tablename, DBController controller){
         ArrayList<AttributeDefinition> attributeDefinitions = new ArrayList<AttributeDefinition>();
         attributeDefinitions.add(new AttributeDefinition()
                 .withAttributeName("Id")
@@ -30,7 +30,7 @@ public class CreateExamples {
                         .withReadCapacityUnits(5L)
                         .withWriteCapacityUnits(6L));
         try {
-            DBConnector.getDynamoDB().createTable(request);
+            controller.getDynamoDB().createTable(request).waitForActive();
         }catch (Exception e){
             //e.printStackTrace();
             return false;
@@ -38,8 +38,8 @@ public class CreateExamples {
         return true;
     }
 
-    public static boolean createRow(String tablename, long id, String dataToStore){
-        Table table = DBConnector.getDynamoDB().getTable(tablename);
+    public static boolean createRow(String tablename, long id, String dataToStore, DBController controller){
+        Table table = controller.getDynamoDB().getTable(tablename);
         try{
             Item sessionRow = new Item()
                 .withPrimaryKey("Id", id)
@@ -47,9 +47,10 @@ public class CreateExamples {
 
             table.putItem(sessionRow);
 
+            table.waitForActiveOrDelete();
+
             return true;
         }catch(Exception e){
-            e.printStackTrace();
             return false;
         }
     }
