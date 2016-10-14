@@ -20,26 +20,28 @@ public class DBController {
 
     public DBController(){
         try {
-            if (new File("./access.ini").exists()) {
+
+            String access="none";
+            String secret="none";
+            if (new File("./access.ini").exists()) { //file stored properties
+
                 Properties prop = new Properties();
                 prop.load(new FileInputStream("./access.ini"));
-                String access = prop.getProperty("Access");
-                String secret = prop.getProperty("Secret");
-                client = new AmazonDynamoDBClient(new BasicAWSCredentials(access, secret));
-                client.setRegion(Region.US_West.toAWSRegion());
-                dynamoDB = new DynamoDB(client);
-            } else {
-                String access = System.getenv("Access");
-                String secret = System.getenv("Secret");
-                if (access == null || secret == null || access.equals("") || secret.equals("")) {
-                    System.exit(-1);
-                } else {
-                    client = new AmazonDynamoDBClient(new BasicAWSCredentials(access, secret));
-                    client.setRegion(Region.US_West.toAWSRegion());
-                }
-                dynamoDB = new DynamoDB(client);
+                access = prop.getProperty("Access"); //from access.ini
+                secret = prop.getProperty("Secret"); //from access.ini
+
+            } else { // environment variables
+
+                access = System.getenv("Access");
+                secret = System.getenv("Secret");
+
             }
-        }catch (IOException e){
+
+            client = new AmazonDynamoDBClient(new BasicAWSCredentials(access, secret));
+            client.setRegion(Region.US_West.toAWSRegion()); // US West
+            dynamoDB = new DynamoDB(client);
+
+        } catch (IOException e){
 
         }
     }

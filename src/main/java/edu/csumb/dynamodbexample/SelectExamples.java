@@ -16,4 +16,29 @@ public class SelectExamples {
             return item;
         }
     }
+
+
+
+
+
+
+
+    /*
+        DOES NOT WORK DO NOT USE THIS!!!
+    public static Item get(String tablename, String data, DBController controller){
+        Table table = controller.getDynamoDB().getTable(tablename); // Table Name = test
+        QuerySpec spec = new QuerySpec()
+                .withProjectionExpression("Id, dataStored")
+                .withFilterExpression("dataStored = :stored")
+                .withValueMap(new ValueMap()
+                        .withString(":stored", data));
+
+        ItemCollection<QueryOutcome> items = table.query(spec);
+        Iterator<Item> item = items.iterator();
+        if(item.hasNext()){
+            return null;
+        }else{
+            return item.next();
+        }
+    }*/
 }
