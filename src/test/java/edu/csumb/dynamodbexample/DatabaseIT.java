@@ -2,6 +2,9 @@ package edu.csumb.dynamodbexample;
 
 import com.amazonaws.services.dynamodbv2.document.Item;
 import org.junit.*;
+
+import java.io.IOException;
+
 import static org.junit.Assert.*;
 
 /**
@@ -10,11 +13,8 @@ import static org.junit.Assert.*;
 public class DatabaseIT {
     private DBController controller;
     @Before
-    public void ConnectToDB(){
-        try {
-            controller = new DBController();
-        }catch(Exception e){
-        }
+    public void ConnectToDB() throws IOException{
+        controller = new DBController();
         DeleteExamples.deleteTable("movies_dev", controller); // just in case its not deleted
         CreateExamples.createTable("movies_dev", controller); // create new fresh table
     }
@@ -53,7 +53,7 @@ public class DatabaseIT {
 
         DeleteExamples.delete("movies_dev", 3, controller);
 
-        assertEquals(SelectExamples.get("movies_dev", 3, controller), null);
+        assertNull(SelectExamples.get("movies_dev", 3, controller));
     }
 
     /*
@@ -66,22 +66,7 @@ public class DatabaseIT {
         UpdateExamples.update("movies_dev", 4, "Terminator 2", controller);
 
         Item item = SelectExamples.get("movies_dev", 4, controller);
-        if(item==null){
-            fail();
-            return;
-        }
+        assertNotNull(item);
         assertTrue(item.get("dataStored").equals("Terminator 2"));
-    }
-
-
-
-
-    //@Test
-    public void createAndVerifyMovieByMovieName(){
-        //CreateExamples.createRow("movies_dev", 2, "Frozen", controller);
-
-        //Item item = SelectExamples.get("movies_dev", "Frozen", controller);
-
-        //assertTrue(item.get("Id").equals(2));
     }
 }
