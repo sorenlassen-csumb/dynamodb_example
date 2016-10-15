@@ -2,6 +2,10 @@ Circle CI build testing on diff
 
 --Testing the Build--
 
+https://circleci.com/docs/phabricator/
+
+Configuring Phabricator to build diffs on CircleCI
+
 #Running This Example (Application)
 
 Clone the repo
