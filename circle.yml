@@ -2,4 +2,6 @@ test:
   post:
     - mkdir -p $CIRCLE_TEST_REPORTS/junit/
     - find . -type f -regex ".*/build/*-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
-
+notify:
+  webhooks:
+    - url: http://csumbse.net/harbormaster/hook/circleci/
