@@ -5,9 +5,18 @@
 <web-app>
     <display-name>REST Web Application</display-name>
 
+    <!-- https://jersey.java.net/documentation/latest/user-guide.html#deployment.servlet.2 -->
     <servlet>
         <servlet-name>REST servlet</servlet-name>
-        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+        <init-param>
+          <param-name>jersey.config.server.provider.packages</param-name>
+          <param-value>edu.csumb.dynamodbexample.rest</param-value>
+        </init-param>
+        <init-param>
+          <param-name>jersey.config.server.provider.scanning.recursive</param-name>
+          <param-value>false</param-value>
+        </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
