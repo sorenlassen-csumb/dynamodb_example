@@ -1,49 +1,41 @@
 package edu.csumb.dynamodbexample;
 
-import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
+import com.amazonaws.auth.PropertiesFileCredentialsProvider;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
-import com.amazonaws.services.dynamodbv2.*;
-import com.amazonaws.services.dynamodbv2.local.server.DynamoDBProxyServer;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.s3.model.Region;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
 
 /**
  * Created by ndavidson on 9/21/16.
  */
 public class DBController {
+    private static final String CREDENTIALS_FILE_PATH = "./access.ini";
+
     private DynamoDB dynamoDB;
     private AmazonDynamoDB client;
 
-    public DBController(){
-        try {
-
-            String access="none";
-            String secret="none";
-            if (new File("./access.ini").exists()) { //file stored properties
-
-                Properties prop = new Properties();
-                prop.load(new FileInputStream("./access.ini"));
-                access = prop.getProperty("Access"); //from access.ini
-                secret = prop.getProperty("Secret"); //from access.ini
-
-            } else { // environment variables
-
-                access = System.getenv("Access");
-                secret = System.getenv("Secret");
-
-            }
-
-            client = new AmazonDynamoDBClient(new BasicAWSCredentials(access, secret));
-            client.setRegion(Region.US_West.toAWSRegion()); // US West
-            dynamoDB = new DynamoDB(client);
-
-        } catch (IOException e){
-
+    private static AWSCredentialsProvider getCredentialsProvider() {
+        if (new File(CREDENTIALS_FILE_PATH).exists()) {
+            // reads properties accessKey, secretKey
+            return new PropertiesFileCredentialsProvider(CREDENTIALS_FILE_PATH);
+        } else {
+            // first looks at env vars AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+            // then sys props aws.accessKeyId, aws.secretKey
+            // then file ~/.aws/credentials
+            // see http://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/credentials.html
+            return new DefaultAWSCredentialsProviderChain();
         }
+    }
+
+    public DBController(){
+        client = new AmazonDynamoDBClient(getCredentialsProvider());
+        client.setRegion(Region.US_West.toAWSRegion()); // US West
+        dynamoDB = new DynamoDB(client);
     }
 
     public void close(){
