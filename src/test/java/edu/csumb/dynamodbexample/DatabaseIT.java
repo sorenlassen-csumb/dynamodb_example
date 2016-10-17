@@ -1,11 +1,9 @@
 package edu.csumb.dynamodbexample;
 
+import static org.junit.Assert.*;
+
 import com.amazonaws.services.dynamodbv2.document.Item;
 import org.junit.*;
-
-import java.io.IOException;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by nathanieldavidson on 10/13/16.
@@ -16,15 +14,16 @@ public class DatabaseIT {
     private DBController controller;
 
     @Before
-    public void ConnectToDB() throws IOException{
+    public void connectToDB(){
         controller = new DBController();
-        DeleteExamples.deleteTable(TABLE, controller); // just in case its not deleted
+        DeleteExamples.deleteTable(TABLE, controller); // just in case it's not deleted
         CreateExamples.createTable(TABLE, controller); // create new fresh table
     }
 
     @After
     public void disconnect(){
         DeleteExamples.deleteTable(TABLE, controller); // delete table
+        controller.close();
     }
 
     /*
