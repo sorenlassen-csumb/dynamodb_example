@@ -11,16 +11,20 @@ import static org.junit.Assert.*;
  * Created by nathanieldavidson on 10/13/16.
  */
 public class DatabaseIT {
+    private static final String TABLE = "movies_dev";
+
     private DBController controller;
+
     @Before
     public void ConnectToDB() throws IOException{
         controller = new DBController();
-        DeleteExamples.deleteTable("movies_dev", controller); // just in case its not deleted
-        CreateExamples.createTable("movies_dev", controller); // create new fresh table
+        DeleteExamples.deleteTable(TABLE, controller); // just in case its not deleted
+        CreateExamples.createTable(TABLE, controller); // create new fresh table
     }
+
     @After
     public void disconnect(){
-        DeleteExamples.deleteTable("movies_dev", controller); // delete table
+        DeleteExamples.deleteTable(TABLE, controller); // delete table
     }
 
     /*
@@ -28,7 +32,7 @@ public class DatabaseIT {
      */
     @Test
     public void createNewMovie(){
-        assertTrue(CreateExamples.createRow("movies_dev", 1, "Deadpool", controller));
+        assertTrue(CreateExamples.createRow(TABLE, 1, "Deadpool", controller));
     }
 
 
@@ -37,9 +41,9 @@ public class DatabaseIT {
      */
     @Test
     public void createAndVerifyMovie(){
-        CreateExamples.createRow("movies_dev", 2, "Frozen", controller);
+        CreateExamples.createRow(TABLE, 2, "Frozen", controller);
 
-        Item item = SelectExamples.get("movies_dev", 2, controller);
+        Item item = SelectExamples.get(TABLE, 2, controller);
 
         assertTrue(item.get("dataStored").equals("Frozen"));
     }
@@ -49,11 +53,11 @@ public class DatabaseIT {
      */
     @Test
     public void deletedMovie(){
-        CreateExamples.createRow("movies_dev", 3, "The Accountant", controller);
+        CreateExamples.createRow(TABLE, 3, "The Accountant", controller);
 
-        DeleteExamples.delete("movies_dev", 3, controller);
+        DeleteExamples.delete(TABLE, 3, controller);
 
-        assertNull(SelectExamples.get("movies_dev", 3, controller));
+        assertNull(SelectExamples.get(TABLE, 3, controller));
     }
 
     /*
@@ -61,11 +65,11 @@ public class DatabaseIT {
      */
     @Test
     public void updateMovieRecordConfirm(){
-        CreateExamples.createRow("movies_dev", 4, "Terminator", controller);
+        CreateExamples.createRow(TABLE, 4, "Terminator", controller);
 
-        UpdateExamples.update("movies_dev", 4, "Terminator 2", controller);
+        UpdateExamples.update(TABLE, 4, "Terminator 2", controller);
 
-        Item item = SelectExamples.get("movies_dev", 4, controller);
+        Item item = SelectExamples.get(TABLE, 4, controller);
         assertNotNull(item);
         assertTrue(item.get("dataStored").equals("Terminator 2"));
     }
