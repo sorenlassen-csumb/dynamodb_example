@@ -3,37 +3,39 @@ package edu.csumb.dynamodbexample;
 import com.amazonaws.services.dynamodbv2.document.*;
 import com.amazonaws.services.dynamodbv2.model.*;
 
-import java.util.ArrayList;
-
 /**
  * Created by ndavidson on 9/21/16.
  */
 public class CreateExamples {
 
-
     public static boolean createTable(String tablename, DBController controller){
-        ArrayList<AttributeDefinition> attributeDefinitions = new ArrayList<AttributeDefinition>();
-        attributeDefinitions.add(new AttributeDefinition()
+        AttributeDefinition attributeDefinition = new AttributeDefinition()
                 .withAttributeName("Id")
-                .withAttributeType(ScalarAttributeType.N));
+                .withAttributeType(ScalarAttributeType.N);
 
-        ArrayList<KeySchemaElement> keySchema = new ArrayList<KeySchemaElement>();
-        keySchema.add(new KeySchemaElement()
+        KeySchemaElement keySchemaElement = new KeySchemaElement()
                 .withAttributeName("Id")
-                .withKeyType(KeyType.HASH)); //Partition key
+                .withKeyType(KeyType.HASH); //Partition key
 
         CreateTableRequest request = new CreateTableRequest()
                 .withTableName(tablename)
-                .withKeySchema(keySchema)
-                .withAttributeDefinitions(attributeDefinitions)
+                .withKeySchema(keySchemaElement)
+                .withAttributeDefinitions(attributeDefinition)
                 .withProvisionedThroughput(new ProvisionedThroughput()
                         .withReadCapacityUnits(5L)
                         .withWriteCapacityUnits(6L));
+        Table table;
         try {
-            controller.getDynamoDB().createTable(request).waitForActive();
-        }catch (Exception e){
-            //e.printStackTrace();
+            table = controller.getDynamoDB().createTable(request);
+        } catch (ResourceInUseException ex) {
             return false;
+        }
+        try {
+            table.waitForActive();
+        } catch (InterruptedException ex) {
+            // See http://www.yegor256.com/2015/10/20/interrupted-exception.html
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(ex);
         }
         return true;
     }
