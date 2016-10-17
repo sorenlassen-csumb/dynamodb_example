@@ -1,6 +1,5 @@
 package edu.csumb.dynamodbexample.rest;
 
-import com.amazonaws.services.dynamodbv2.document.Item;
 import edu.csumb.dynamodbexample.Executor;
 
 import javax.ws.rs.GET;

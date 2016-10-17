@@ -1,8 +1,5 @@
 package edu.csumb.dynamodbexample;
 
-import com.amazonaws.services.dynamodbv2.document.Item;
-
-import javax.ws.rs.core.Response;
 import java.io.PrintStream;
 
 /**
@@ -10,13 +7,16 @@ import java.io.PrintStream;
  */
 
 public class Executor {
-    private static final String TABLE = "test";
+    private static final String TABLE_NAME = "test";
 
-    public static void execute(PrintStream out){
+    public static void execute(PrintStream out) {
         DBController controller = new DBController(); // connect to the dynamodb server
-        if (CreateExamples.createTable(TABLE, controller)) {
+
+        IdDataTable table = IdDataTable.createTable(TABLE_NAME, controller);
+        if (table != null) {
             out.println("Table Created!");
         } else {
+            table = IdDataTable.openTable(TABLE_NAME, controller);
             out.println("Table Already Exists!");
         }
 
@@ -30,36 +30,25 @@ public class Executor {
 
     */
 
-        if (CreateExamples.createRow(TABLE, 1, "ping", controller)) { // create row in tablename = test, with id=1 and dataToStore=ping
-            out.println("Created row!");
-        } else {
-            out.println("Failed to create row!");
-        }
+        table.put(1, "ping"); // create row with id=1 and data=ping
+        out.println("Created row!");
 
-        Item item = SelectExamples.get(TABLE, 1, controller); // fetch from the table "test" with the id = 1
-
-        out.println("Data from db: " + item.get("dataStored")); // print out ping
+        String data = table.get(1); // fetch with id=1
+        out.println("Data from db: " + data); // print out ping
 
         // Update row!
 
-        if (UpdateExamples.update(TABLE, 1, "pong", controller)) {
-            out.println("Updated Row!");
+        table.update(1, "pong");
+        out.println("Updated Row!");
 
-            item = SelectExamples.get(TABLE, 1, controller); // read from the DB again to check the value of dataStored
-            out.println("New data value from db: " + item.get("dataStored"));
-        } else {
-            out.println("Failed to update row!");
-        }
+        data = table.get(1); // read from the DB again to check the value of dataStored
+        out.println("New data value from db: " + data);
 
+        table.delete(1); // Now delete the entry
+        out.println("Deleted row!");
 
-        if (DeleteExamples.delete(TABLE, 1, controller)) { // Now delete the entry
-            out.println("Deleted row!");
-        } else {
-            out.println("Failed to delete row!");
-        }
-
-        item = SelectExamples.get(TABLE, 1, controller);
-        if (item == null) {
+        data = table.get(1);
+        if (data == null) {
             out.println("Row does not exist!");
         } else {
             out.println("Woops, row was not deleted!");
